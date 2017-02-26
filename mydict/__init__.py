@@ -13,38 +13,31 @@ class MyDict(dict):
             for k, v in dict_source.items():
                 self[k] = self._transform(v)
 
-        for k, v in kw.items():
-            self[k] = self._transform(v)
+        for key, value in kw.items():
+            self[key] = self._transform(value)
 
-    def _transform(self, v):
-        if isinstance(v, (dict, MyDict)):
-            return MyDict(v)
+    def _transform(self, source):
+        if isinstance(source, (dict, MyDict)):
+            return MyDict(source)
 
-        elif isinstance(v, list):
-            return [item for item in map(self._transform, v)]
+        elif isinstance(source, list):
+            return [item for item in map(self._transform, source)]
 
-        elif isinstance(v, tuple):
-            v_ = None
-            for item in v:
+        elif isinstance(source, tuple):
+            result = None
+            for item in source:
 
-                if isinstance(v, (dict, MyDict)):
-                    if not v_:
-                        v_ = (MyDict(item),)
-
-                    else:
-                        v_ = v_ + (MyDict(item),)
+                if not result:
+                    result = (self._transform(item),)
 
                 else:
-                    if not v_:
-                        v_ = (self._transform(item),)
+                    result = result + (self._transform(item),)
 
-                    else:
-                        v_ = v_ + (self._transform(item),)
-
-            return v_
+            return result
 
         else:
-            return v
+            # no need for transformation (int, float, str, set, ...)
+            return source
 
     def __getattr__(self, name):
         """Get a field "name" from the object in the form: obj.name"""
@@ -56,22 +49,27 @@ class MyDict(dict):
         self[name] = self._transform(value)
 
     def __getitem__(self, name):
+        """Get a field "key" value from the object in the form: obj[name]"""
         return self.get(name)
 
     def get(self, key, default=None):
-        parts = str(key).split('.')
-        if len(parts) > 1:
-            try:
-                return self.get(parts[0]).get('.'.join(parts[1:]))
-
-            except:
-                return None
-
-        else:
+        if key in self:
             return super(MyDict, self).get(key, default)
 
+        else:
+            parts = str(key).split('.')
+            if len(parts) > 1:
+                try:
+                    return self.get(parts[0]).get('.'.join(parts[1:]))
+
+                except:
+                    return None
+
+            else:
+                return super(MyDict, self).get(key, default)
+
     @staticmethod
-    def from_json(s):
-        """Returns a "MyDict" instance using a JSON string"""
-        d = json.loads(s)
-        return MyDict(**d)
+    def from_json(json_string):
+        """Returns a "MyDict" instance from a JSON string"""
+        json_obj = json.loads(json_string)
+        return MyDict(json_obj)

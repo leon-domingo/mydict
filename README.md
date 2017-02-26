@@ -66,6 +66,12 @@ or both
     d.foo == 'bar'
     d.baz == 123
 
+Please, take into account that keyword initialization has precedence over the _dict_ (first parameter of the _constructor_)
+
+    d = MyDict({'foo': 'bar'}, foo='BAR')
+    ...
+    d.foo == 'BAR'
+
 It's also possible to access members using a _path_ with **get** or _brackets notation_ (_d['...']_):
 
     d = MyDict(foo={'bar': 'baz'})
@@ -73,4 +79,22 @@ It's also possible to access members using a _path_ with **get** or _brackets no
     d['foo.bar'] == 'baz'
     d.get('foo.bar') == 'baz'
 
+But when those keys _with dots_ exists in the tree they are accessed using the corresponding key
+
+    d = MyDict({'foo.bar': 'baz'})
+    ...
+    # 'foo.bar' is not interpreted as a path because the key exists
+    d['foo.bar'] = 'baz'
+
+But there's a particular case, if a _dotted key_ exists and match an existing _path_, when this ain't work properly, or work in a different way depending on the method of access used.
+
+    d = MyDict({'foo': {'bar': 'baz'}, 'foo.bar': 'BAZ'})
+    ...
+    d['foo.bar'] = 'BAZ'  # the "dotted field" ('foo.bar') has precedence over the path
+    d.foo.bar = 'baz'  # it's not possible to detect a "dotted key" using "dot notation"
+
+Personally, I don't see this as a great issue because I generally avoid using dots in keys, like in the previous case
+
 The tests passed successfully with **Python 3.6** and **Python 2.7** versions.
+
+    $ pytest mydict -v
