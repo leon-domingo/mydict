@@ -1,3 +1,7 @@
 *.pyc
 venv*/
 .cache/
+mydict.egg-info/
+dist/
+build/
+*sublime*
