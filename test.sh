@@ -1,2 +1,2 @@
 #!/bin/bash
-pytest mydict -v -x
+pytest mydict -v

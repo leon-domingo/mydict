@@ -66,6 +66,13 @@ class TestMyDict:
         assert ('foo' in d) is True
         assert ('baz' in d) is False
 
+    def test__check_path_existence_with_in(self):
+
+        d = MyDict({'foo': {'bar': 'baz'}})
+
+        assert d.has_path('foo') is True
+        assert d.has_path('foo.bar') is True
+
     def test__items_method(self):
 
         d = MyDict(foo='Hello, MyDict!', bar=123, baz=[1, 2, 3])

@@ -40,17 +40,47 @@ class MyDict(dict):
             return source
 
     def __getattr__(self, name):
-        """Get a field "name" from the object in the form: obj.name"""
+        """
+        Get a field "name" from the object in the form:
+            obj.name
+        """
         if name in self:
             return self[name]
 
     def __setattr__(self, name, value):
-        """Sets a field into the object in the form obj.name = value"""
+        """
+        Sets a field into the object in the form:
+            obj.name = value
+        """
         self[name] = self._transform(value)
 
     def __getitem__(self, name):
-        """Get a field "key" value from the object in the form: obj[name]"""
+        """
+        Get a field "key" value from the object in the form:
+            obj[name]
+        """
         return self.get(name)
+
+    def has_path(self, key):
+        """
+        Check existence of "path" in the tree.
+
+        d = MyDict({'foo': {'bar': 'baz'}})
+        d.has_path('foo.bar') == True
+
+        **It only supports "dot-notation" (d.foo.bar)
+        """
+        if super(MyDict, self).__contains__(key):
+            return True
+
+        else:
+            parts = str(key).split('.')
+            if len(parts) > 1:
+                k = '.'.join(parts[:1])
+                return self[k].has_path('.'.join(parts[1:]))
+
+            else:
+                return super(MyDict, self).__contains__(key)
 
     def get(self, key, default=None):
         if key in self:
