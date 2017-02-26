@@ -86,7 +86,7 @@ But when those keys _with dots_ exists in the tree they are accessed using the c
     # 'foo.bar' is not interpreted as a path because the key exists
     d['foo.bar'] = 'baz'
 
-But there's a particular case, if a _dotted key_ exists and match an existing _path_, when this ain't work properly, or work in a different way depending on the method of access used.
+But there's a particular case, if a _dotted key_ exists and match an existing _path_, then this ain't work properly, or work in a different way depending on the method of access used, to be correct
 
     d = MyDict({'foo': {'bar': 'baz'}, 'foo.bar': 'BAZ'})
     ...
