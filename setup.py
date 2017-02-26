@@ -3,7 +3,7 @@
 from setuptools import setup
 import os
 
-description = 'A Python dict subclass which tries to act like JavaScript objects, so you can use the dot-notation (d.foo) to access members of the object.',
+description = 'A Python dict subclass which tries to act like JavaScript objects, so you can use the dot-notation (d.foo) to access members of the object.'
 
 try:
     import pypandoc
