@@ -2,6 +2,14 @@
 
 A **Python** _dict_ subclass which tries to act like **JavaScript** objects, so you can use the **dot notation** (_d.foo_) to access members of the object. If the member doesn't exist yet then it's created when you assign a value to it. Brackets notation (_d['foo']_) is also possible.
 
+## Installation
+
+    $ pip install mydict
+
+## Examples
+
+Let's give it a try
+
     d = MyDict()
     d.foo = 'bar'
 
