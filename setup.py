@@ -1,9 +1,9 @@
 # coding=utf8
 
 from setuptools import setup
-import pypandoc
 
 try:
+    import pypandoc
     long_description = pypandoc.convert_file('./README.md', 'rst')
 
 except ImportError:
@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='mydict',
-    version='1.0.5',
+    version='1.0.6',
     author=u'León Domingo',
     author_email='leon@codevince.dev',
     description='A Python dict subclass which tries to act like JavaScript objects, so you can use the dot-notation (d.foo) to access members of the object.',
