@@ -98,6 +98,10 @@ class MyDict(dict):
             else:
                 return super(MyDict, self).get(key, default)
 
+    def to_json(self):
+        """Returns a JSON-like string representin this instance"""
+        return json.dumps(self)
+
     @staticmethod
     def from_json(json_string):
         """Returns a "MyDict" instance from a JSON string"""

@@ -286,3 +286,9 @@ class TestMyDict:
         assert d.foo == 'bar'
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
+
+    def test__to_json(self):
+
+        d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}})
+
+        assert d.to_json() == '{"foo": {"bar": 123, "baz": [1, 2, {"foo": "bar"}]}}'
