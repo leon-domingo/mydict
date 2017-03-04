@@ -103,7 +103,26 @@ class MyDict(dict):
         return json.dumps(self)
 
     @staticmethod
-    def from_json(json_string):
-        """Returns a "MyDict" instance from a JSON string"""
-        json_obj = json.loads(json_string)
+    def from_json(json_source):
+        """
+        Returns a "MyDict" instance from a:
+            JSON string
+            <file>-like containing a JSON string
+        """
+
+        if isinstance(json_source, (str, bytes)):
+            # decode bytes to str
+            if isinstance(json_source, bytes):
+                json_source = json_source.decode('utf8')
+
+            load_method = 'loads'
+
+        elif hasattr(json_source, 'read'):
+            json_source.seek(0)
+            load_method = 'load'
+
+        # json_obj = json.load(json_source)
+        # json_obj = json.loads(json_source)
+        json_obj = getattr(json, load_method)(json_source)
+
         return MyDict(json_obj)

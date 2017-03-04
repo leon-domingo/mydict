@@ -1,6 +1,8 @@
 # coding=utf8
 
 import decimal
+import os
+from io import StringIO, BytesIO
 from . import MyDict
 
 
@@ -279,13 +281,65 @@ class TestMyDict:
 
         assert d == {'foo': 'bar', 'baz': 123}
 
-    def test__create_from_json(self):
+    def test__create_from_json__string(self):
 
         d = MyDict.from_json('{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}')
 
         assert d.foo == 'bar'
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
+
+    def test__create_from_json__bytes(self):
+
+        d = MyDict.from_json('{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}'.encode('utf8'))
+
+        assert d.foo == 'bar'
+        assert d.foo != b'bar'
+        assert d.baz[0] == 1
+        assert d.baz[3].foo == 'bar'
+        assert d.baz[3].foo != b'bar'
+
+    def test__create_from_json_file(self):
+
+        json_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test/test.json')
+
+        d = MyDict.from_json(open(json_file, 'r'))
+
+        assert d.foo == 'bar'
+        assert d.baz[0] == 1
+        assert d.baz[3].foo == 'bar'
+
+    def test__create_from_json_file_b(self):
+
+        json_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test/test.json')
+
+        d = MyDict.from_json(open(json_file, 'rb'))
+
+        assert d.foo == 'bar'
+        assert d.baz[0] == 1
+        assert d.baz[3].foo == 'bar'
+
+    def test__create_from_json_file_like__string(self):
+
+        json_source = StringIO()
+        json_source.write('{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}')
+
+        d = MyDict.from_json(json_source)
+
+        assert d.foo == 'bar'
+        assert d.baz[0] == 1
+        assert d.baz[3].foo == 'bar'
+
+    def test__create_from_json_file_like__bytes(self):
+
+        json_source = BytesIO()
+        json_source.write('{"foo": "bár", "baz": [1, 2.2, "fuu", {"foo": "bàr"}]}'.encode('utf8'))
+
+        d = MyDict.from_json(json_source)
+
+        assert d.foo == 'bár'
+        assert d.baz[0] == 1
+        assert d.baz[3].foo == 'bàr'
 
     def test__to_json(self):
 

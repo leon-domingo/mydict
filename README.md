@@ -103,6 +103,40 @@ But there's a particular case, if a _dotted key_ exists and match an existing _p
 
 Personally, I don't see this as a great issue because I generally avoid using dots in keys, like in the previous case
 
-The tests passed successfully with **Python 3.6** and **Python 2.7** versions.
+#### Initialization from JSON
+
+It's also possible to load a JSON from _str_, _bytes_, and file-like object (with a _.read()_ method) using the _static_ method **from_json**:
+
+    d = MyDict.from_json('{"foo": "bar"}')
+    # d.foo == 'bar'
+
+
+    d = MyDict.from_json(b'{"foo": "bar"}')
+    # d.foo == 'bar'
+
+
+    d = MyDict.from_json(open('/path/to/file.json', 'r'))
+    # d = MyDict.from_json(open('/path/to/file.json', 'rb')) also work
+
+
+    from io import StringIO, BytesIO
+
+    s = StringIO()
+    s.write('{"foo": "bar"}')
+
+    d = MyDict.from_json(s)
+    # d.foo == 'bar'
+
+    ...
+
+    b = StringIO()
+    b.write(b'{"foo": "bar"}')
+
+    d = MyDict.from_json(b)
+    # d.foo == 'bar'
+
+
+
+The tests passed successfully with **Python 3.6**. With **Python 2.7** failed on "bytes stuff" tests, regarding the use of the static method "from_json()"
 
     $ pytest mydict -v
