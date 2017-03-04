@@ -105,7 +105,7 @@ Personally, I don't see this as a great issue because I generally avoid using do
 
 #### Initialization from JSON
 
-It's also possible to load a JSON from _str_, _bytes_, and file-like object (with a _.read()_ method) using the _static_ method **from_json**:
+It's also possible to load a JSON from _str_, _bytes_, and file-like objects (with a _.read()_ method) using the _static_ method **from_json**:
 
     d = MyDict.from_json('{"foo": "bar"}')
     # d.foo == 'bar'
