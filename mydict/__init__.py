@@ -92,7 +92,7 @@ class MyDict(dict):
                 try:
                     return self.get(parts[0]).get('.'.join(parts[1:]))
 
-                except:
+                except Exception:
                     return None
 
             else:
@@ -101,6 +101,13 @@ class MyDict(dict):
     def to_json(self):
         """Returns a JSON-like string representin this instance"""
         return json.dumps(self)
+
+    def get_dict(self):
+        """Returns a <dict> of the <MyDict> object"""
+        d_ = {}
+        d_.update(**self)
+
+        return d_
 
     @staticmethod
     def from_json(json_source):

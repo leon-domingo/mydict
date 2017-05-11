@@ -346,3 +346,11 @@ class TestMyDict:
         d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}})
 
         assert d.to_json() == '{"foo": {"bar": 123, "baz": [1, 2, {"foo": "bar"}]}}'
+
+    def test__get_dict(self):
+
+        d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}})
+
+        d_ = d.get_dict()
+
+        assert d_ == {'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}} and not issubclass(type(d_), MyDict)

@@ -15,7 +15,7 @@ except ImportError:
 
 setup(
     name='mydict',
-    version='1.0.12',
+    version='1.0.13',
     author=u'León Domingo',
     author_email='leon@codevince.dev',
     description=description,
