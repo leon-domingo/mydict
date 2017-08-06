@@ -349,8 +349,14 @@ class TestMyDict:
 
     def test__get_dict(self):
 
-        d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}})
+        d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}, 'bar': {'one': 1}})
 
         d_ = d.get_dict()
 
-        assert d_ == {'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}} and not issubclass(type(d_), MyDict)
+        assert d_ == {'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}, 'bar': {'one': 1}} and not issubclass(type(d_), MyDict)
+
+        assert not issubclass(type(d_['bar']), MyDict)
+        assert isinstance(d_['bar'], dict)
+
+        assert not issubclass(type(d_['foo']['baz'][2]), MyDict)
+        assert isinstance(d_['foo']['baz'][2], dict)

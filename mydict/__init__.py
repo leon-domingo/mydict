@@ -100,14 +100,50 @@ class MyDict(dict):
 
     def to_json(self):
         """Returns a JSON-like string representin this instance"""
-        return json.dumps(self)
+        return json.dumps(self.get_dict())
 
     def get_dict(self):
         """Returns a <dict> of the <MyDict> object"""
-        d_ = {}
-        d_.update(**self)
 
-        return d_
+        # d_ = {}
+
+        def _get_dict(member):
+
+            if isinstance(member, (dict, MyDict)):
+                d = {}
+                for k, v in member.items():
+                    d[k] = _get_dict(v)
+
+                return d
+
+            elif isinstance(member, (list,)):
+                lst = []
+                for a in member:
+                    lst.append(_get_dict(a))
+
+                return lst
+
+            elif isinstance(member, (tuple,)):
+                tpl = tuple()
+                for a in member:
+                    tpl = tpl + (_get_dict(a),)
+
+                return tpl
+
+            elif isinstance(member, (set,)):
+                st = set([])
+                for a in member:
+                    st.add(_get_dict(a))
+
+                return st
+
+            else:
+                return member
+
+        # d_.update(**self)
+        # return d_
+
+        return _get_dict(self)
 
     @staticmethod
     def from_json(json_source):
