@@ -97,7 +97,7 @@ class MyDict(dict):
                 return super(MyDict, self).get(key, default)
 
     def to_json(self):
-        """Returns a JSON-like string representin this instance"""
+        """Returns a JSON-like string representing this instance"""
         return json.dumps(self.get_dict())
 
     def get_dict(self):
