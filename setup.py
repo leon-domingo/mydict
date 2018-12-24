@@ -20,6 +20,7 @@ setup(
     author_email='leon.domingo@gmail.com',
     description=description,
     long_description=long_description,
+    long_description_content_type='text/markdown',
     license='MIT',
     keywords='dict javascript dot-notation',
     classifiers=[
