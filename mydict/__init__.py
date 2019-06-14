@@ -103,8 +103,6 @@ class MyDict(dict):
     def get_dict(self):
         """Returns a <dict> of the <MyDict> object"""
 
-        # d_ = {}
-
         def _get_dict(member):
 
             if isinstance(member, (dict, MyDict)):
@@ -137,9 +135,6 @@ class MyDict(dict):
 
             else:
                 return member
-
-        # d_.update(**self)
-        # return d_
 
         return _get_dict(self)
 

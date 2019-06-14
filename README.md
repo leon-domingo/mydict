@@ -124,6 +124,30 @@ d.foo.bar = 'baz'  # it's not possible to detect a "dotted key" using "dot notat
 
 Personally, I don't see this as a great issue because I generally avoid using dots in keys, like in the previous case
 
+#### Transformation
+
+You have at your disposal a couple of methods to retrieve the **MyDict** object transformed into _something else_:
+
+##### to_json
+
+Returns the **MyDict** object as a _JSON_ string (_str_):
+
+```python
+d = MyDict(foo="bar", arr=[1, 2, {"three": 3}])
+d.to_json()
+# '{"foo": "bar", "arr": [1, 2, {"three": 3}]}'
+```
+
+##### get_dict
+
+In some occasions you'll need a _plain old_ Python _dict_ representation of the **MyDict** object, though is a _dict_ subclass:
+
+```python
+d = MyDict(foo="bar", arr=[{"one": 1}, {"two": 2}])
+d.get_dict()
+# d_ = {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
+```
+
 #### Initialization from JSON
 
 It's also possible to load a JSON from _str_, _bytes_, and file-like objects (with a _.read()_ method) using the _static_ method **from_json**:
