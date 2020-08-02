@@ -5,3 +5,4 @@ mydict.egg-info/
 dist/
 build/
 *sublime*
+.vscode

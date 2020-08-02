@@ -1,0 +1,10 @@
+{
+    "myFoo": "bar",
+    "myBaz": [
+        1,
+        2.2,
+        "fuu", {
+            "myFoo": "bar"
+        }
+    ]
+}

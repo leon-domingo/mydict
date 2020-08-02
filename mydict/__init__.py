@@ -1,10 +1,18 @@
 import json
+import stringcase
+from .utils import (
+    object_hook,
+    SNAKE_CASE,
+    CAMEL_CASE,
+    PASCAL_CASE,
+)
 
 
 class MyDict(dict):
     """
     A **Python** _dict_ subclass which tries to act like **JavaScript** objects, so you can use the **dot notation** (.) to access members of the object. If the member doesn't exist yet then it's created when you assign something to it. Brackets notation (d['foo']) is also possible.
     """
+
 
     def __init__(self, dict_source=None, **kw):
         if dict_source and isinstance(dict_source, (dict, MyDict)):
@@ -96,69 +104,84 @@ class MyDict(dict):
             else:
                 return super(MyDict, self).get(key, default)
 
-    def to_json(self):
+    def to_json(self, case_type=None):
         """Returns a JSON-like string representing this instance"""
-        return json.dumps(self.get_dict())
+        return json.dumps(self.get_dict(case_type=case_type))
 
-    def get_dict(self):
+    def get_dict(self, case_type=None):
         """Returns a <dict> of the <MyDict> object"""
 
-        def _get_dict(member):
+        def _get_dict(member, case_type):
 
             if isinstance(member, (dict, MyDict)):
                 d = {}
                 for k, v in member.items():
-                    d[k] = _get_dict(v)
+                    custom_key = k
+                    if case_type == SNAKE_CASE:
+                        custom_key = stringcase.snakecase(k)
+
+                    elif case_type == CAMEL_CASE:
+                        custom_key = stringcase.camelcase(k)
+
+                    elif case_type == PASCAL_CASE:
+                        custom_key = stringcase.pascalcase(k)
+
+                    d[custom_key] = _get_dict(v, case_type)
 
                 return d
 
             elif isinstance(member, (list,)):
                 lst = []
                 for a in member:
-                    lst.append(_get_dict(a))
+                    lst.append(_get_dict(a, case_type))
 
                 return lst
 
             elif isinstance(member, (tuple,)):
                 tpl = tuple()
                 for a in member:
-                    tpl = tpl + (_get_dict(a),)
+                    tpl = tpl + (_get_dict(a, case_type),)
 
                 return tpl
 
             elif isinstance(member, (set,)):
                 st = set([])
                 for a in member:
-                    st.add(_get_dict(a))
+                    st.add(_get_dict(a, case_type))
 
                 return st
 
             else:
                 return member
 
-        return _get_dict(self)
+        return _get_dict(self, case_type)
+
 
     @staticmethod
-    def from_json(json_source):
+    def from_json(json_source, case_type=None):
         """
         Returns a "MyDict" instance from a:
             JSON string
             <file>-like containing a JSON string
         """
 
+        def _object_hook(obj):
+            return object_hook(obj, case_type)
+
         if isinstance(json_source, (str, bytes)):
             # decode bytes to str
             if isinstance(json_source, bytes):
                 json_source = json_source.decode('utf8')
 
-            load_method = 'loads'
+            json_load_func = getattr(json, 'loads')
 
         elif hasattr(json_source, 'read'):
             json_source.seek(0)
-            load_method = 'load'
+            json_load_func = getattr(json, 'load')
 
-        # json_obj = json.load(json_source)
-        # json_obj = json.loads(json_source)
-        json_obj = getattr(json, load_method)(json_source)
+        json_obj = json_load_func(
+            json_source,
+            object_hook=_object_hook,
+        )
 
         return MyDict(json_obj)
