@@ -1,9 +1,13 @@
-# coding=utf8
-
 import decimal
 import os
 from io import StringIO, BytesIO
 from . import MyDict
+from .utils import (
+    SNAKE_CASE,
+    CAMEL_CASE,
+    PASCAL_CASE,
+    KEBAB_CASE,
+)
 
 
 class TestMyDict:
@@ -81,7 +85,7 @@ class TestMyDict:
 
         n = 0
         keys = {'foo', 'bar', 'baz'}
-        for key, value in d.items():
+        for key, _ in d.items():
             keys.remove(key)
 
             if key == 'foo':
@@ -289,9 +293,44 @@ class TestMyDict:
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
 
+    def test__create_from_json__string_with_snake_case(self):
+
+        d = MyDict.from_json(
+            '{"myFoo": "bar", "myBaz": [1, 2.2, "fuu", {"myFoo": "bar"}]}',
+            case_type=SNAKE_CASE,
+        )
+
+        assert d.my_foo == 'bar'
+        assert d.my_baz[0] == 1
+        assert d.my_baz[3].my_foo == 'bar'
+
+    def test__create_from_json__string_with_camel_case(self):
+
+        d = MyDict.from_json(
+            '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}',
+            case_type=CAMEL_CASE,
+        )
+
+        assert d.myFoo == 'bar'
+        assert d.myBaz[0] == 1
+        assert d.myBaz[3].myFoo == 'bar'
+
+    def test__create_from_json__string_with_pascal_case(self):
+
+        d = MyDict.from_json(
+            '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}',
+            case_type=PASCAL_CASE,
+        )
+
+        assert d.MyFoo == 'bar'
+        assert d.MyBaz[0] == 1
+        assert d.MyBaz[3].MyFoo == 'bar'
+
     def test__create_from_json__bytes(self):
 
-        d = MyDict.from_json('{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}'.encode('utf8'))
+        d = MyDict.from_json(
+            '{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}'.encode('utf8')
+        )
 
         assert d.foo == 'bar'
         assert d.foo != b'bar'
@@ -299,9 +338,45 @@ class TestMyDict:
         assert d.baz[3].foo == 'bar'
         assert d.baz[3].foo != b'bar'
 
+    def test__create_from_json__bytes_with_snake_case(self):
+
+        d = MyDict.from_json(
+            '{"myFoo": "bar", "myBaz": [1, 2.2, "fuu", {"myFoo": "bar"}]}'.encode('utf8'),
+            case_type=SNAKE_CASE,
+        )
+
+        assert d.my_foo == 'bar'
+        assert d.my_baz[0] == 1
+        assert d.my_baz[3].my_foo == 'bar'
+
+    def test__create_from_json__bytes_with_camel_case(self):
+
+        d = MyDict.from_json(
+            '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}'.encode('utf8'),
+            case_type=CAMEL_CASE,
+        )
+
+        assert d.myFoo == 'bar'
+        assert d.myBaz[0] == 1
+        assert d.myBaz[3].myFoo == 'bar'
+
+    def test__create_from_json__bytes_with_pascal_case(self):
+
+        d = MyDict.from_json(
+            '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}'.encode('utf8'),
+            case_type=PASCAL_CASE,
+        )
+
+        assert d.MyFoo == 'bar'
+        assert d.MyBaz[0] == 1
+        assert d.MyBaz[3].MyFoo == 'bar'
+
     def test__create_from_json_file(self):
 
-        json_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test/test.json')
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test.json',
+        )
 
         d = MyDict.from_json(open(json_file, 'r'))
 
@@ -309,15 +384,114 @@ class TestMyDict:
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
 
+    def test__create_from_json_file_with_snake_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-camel-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'r'),
+            case_type=SNAKE_CASE,
+        )
+
+        assert d.my_foo == 'bar'
+        assert d.my_baz[0] == 1
+        assert d.my_baz[3].my_foo == 'bar'
+
+    def test__create_from_json_file_with_camel_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-snake-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'r'),
+            case_type=CAMEL_CASE,
+        )
+
+        assert d.myFoo == 'bar'
+        assert d.myBaz[0] == 1
+        assert d.myBaz[3].myFoo == 'bar'
+
+    def test__create_from_json_file_with_pascal_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-snake-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'r'),
+            case_type=PASCAL_CASE,
+        )
+
+        assert d.MyFoo == 'bar'
+        assert d.MyBaz[0] == 1
+        assert d.MyBaz[3].MyFoo == 'bar'
+
     def test__create_from_json_file_b(self):
 
-        json_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'test/test.json')
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test.json',
+        )
 
         d = MyDict.from_json(open(json_file, 'rb'))
 
         assert d.foo == 'bar'
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
+
+    def test__create_from_json_file_b_with_snake_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-camel-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'rb'),
+            case_type=SNAKE_CASE,
+        )
+
+        assert d.my_foo == 'bar'
+        assert d.my_baz[0] == 1
+        assert d.my_baz[3].my_foo == 'bar'
+
+    def test__create_from_json_file_b_with_camel_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-snake-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'rb'),
+            case_type=CAMEL_CASE,
+        )
+
+        assert d.myFoo == 'bar'
+        assert d.myBaz[0] == 1
+        assert d.myBaz[3].myFoo == 'bar'
+
+    def test__create_from_json_file_b_with_pascal_case(self):
+
+        json_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'test/test-snake-case.json',
+        )
+
+        d = MyDict.from_json(
+            open(json_file, 'rb'),
+            case_type=PASCAL_CASE,
+        )
+
+        assert d.MyFoo == 'bar'
+        assert d.MyBaz[0] == 1
+        assert d.MyBaz[3].MyFoo == 'bar'
 
     def test__create_from_json_file_like__string(self):
 
@@ -347,6 +521,27 @@ class TestMyDict:
 
         assert d.to_json() == '{"foo": {"bar": 123, "baz": [1, 2, {"foo": "bar"}]}}'
 
+    def test__to_json_with_snake_case(self):
+
+        d = MyDict({'myFoo': {'myBar': 123, 'myBaz': [1, 2, {'myFoo': 'bar'}]}})
+
+        json_string = '{"my_foo": {"my_bar": 123, "my_baz": [1, 2, {"my_foo": "bar"}]}}'
+        assert d.to_json(case_type=SNAKE_CASE) == json_string
+
+    def test__to_json_with_camel_case(self):
+
+        d = MyDict({'my_foo': {'my_bar': 123, 'my_baz': [1, 2, {'my_foo': 'bar'}]}})
+
+        json_string = '{"myFoo": {"myBar": 123, "myBaz": [1, 2, {"myFoo": "bar"}]}}'
+        assert d.to_json(case_type=CAMEL_CASE) == json_string
+
+    def test__to_json_with_pascal_case(self):
+
+        d = MyDict({'my_foo': {'my_bar': 123, 'my_baz': [1, 2, {'my_foo': 'bar'}]}})
+
+        json_string = '{"MyFoo": {"MyBar": 123, "MyBaz": [1, 2, {"MyFoo": "bar"}]}}'
+        assert d.to_json(case_type=PASCAL_CASE) == json_string
+
     def test__get_dict(self):
 
         d = MyDict({'foo': {'bar': 123, 'baz': [1, 2, {'foo': 'bar'}]}, 'bar': {'one': 1}})
@@ -360,3 +555,24 @@ class TestMyDict:
 
         assert not issubclass(type(d_['foo']['baz'][2]), MyDict)
         assert isinstance(d_['foo']['baz'][2], dict)
+
+    def test__get_dict_with_snake_case(self):
+
+        d = MyDict({'myFoo': {'myBar': 123, 'myBaz': [1, 2, {'myFoo': 'bar'}]}})
+        d_ = d.get_dict(case_type=SNAKE_CASE)
+
+        assert d_['my_foo'] == {'my_bar': 123, 'my_baz': [1, 2, {'my_foo': 'bar'}]}
+
+    def test__get_dict_with_camel_case(self):
+
+        d = MyDict({'my_foo': {'my_bar': 123, 'my_baz': [1, 2, {'my_foo': 'bar'}]}})
+        d_ = d.get_dict(case_type=CAMEL_CASE)
+
+        assert d_['myFoo'] == {'myBar': 123, 'myBaz': [1, 2, {'myFoo': 'bar'}]}
+
+    def test__get_dict_with_pascal_case(self):
+
+        d = MyDict({'my_foo': {'my_bar': 123, 'my_baz': [1, 2, {'my_foo': 'bar'}]}})
+        d_ = d.get_dict(case_type=PASCAL_CASE)
+
+        assert d_['MyFoo'] == {'MyBar': 123, 'MyBaz': [1, 2, {'MyFoo': 'bar'}]}

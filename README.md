@@ -138,6 +138,14 @@ d.to_json()
 # '{"foo": "bar", "arr": [1, 2, {"three": 3}]}'
 ```
 
+In addition, it's also possible to handle the _case type_ of the keys inside the object. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see in action:
+
+```python
+d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
+d.to_json(case_type=mydict.CAMEL_CASE)
+# '{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}'
+```
+
 ##### get_dict
 
 In some occasions you'll need a _plain old_ Python _dict_ representation of the **MyDict** object, though is a _dict_ subclass:
@@ -146,6 +154,14 @@ In some occasions you'll need a _plain old_ Python _dict_ representation of the 
 d = MyDict(foo="bar", arr=[{"one": 1}, {"two": 2}])
 d.get_dict()
 # d_ = {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
+```
+
+In addition, it's also possible to handle the _case type_ of the keys inside the object, in the same way **to_json** works. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see it in action:
+
+```python
+d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
+d.to_json(case_type=mydict.CAMEL_CASE)
+# {'myArr': [1, 2, {'otherKey': 3}], 'myFoo': 'bar'}
 ```
 
 #### Initialization from JSON
@@ -180,6 +196,17 @@ b.write(b'{"foo": "bar"}')
 d = MyDict.from_json(b)
 # d.foo == 'bar'
 ```
+
+In addition, there's also a param **case_type** in the **from_json** method. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
+
+```python
+d = MyDict.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_type=SNAKE_CASE)
+# d.my_foo == 'bar'
+# d.my_arr == [1, 2, {'other_key': 3}]
+# d.my_arr[2].other_key == 3
+```
+
+Very useful when we collect data from an API which uses _camelCase_ for its keys but we want a more _pythonic_ way for those keys.
 
 The tests passed successfully with **Python 3.6**. With **Python 2.7** fail on "bytes stuff" tests, regarding the use of the static method **from_json()**.
 
