@@ -138,7 +138,7 @@ d.to_json()
 # '{"foo": "bar", "arr": [1, 2, {"three": 3}]}'
 ```
 
-In addition, it's also possible to handle the _case type_ of the keys inside the object. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see in action:
+In addition, it's also possible to handle the _case type_ of the keys inside the object. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see it in action:
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
@@ -160,7 +160,7 @@ In addition, it's also possible to handle the _case type_ of the keys inside the
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
-d.to_json(case_type=mydict.CAMEL_CASE)
+d.get_dict(case_type=mydict.CAMEL_CASE)
 # {'myArr': [1, 2, {'otherKey': 3}], 'myFoo': 'bar'}
 ```
 

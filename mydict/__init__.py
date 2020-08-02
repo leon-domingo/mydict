@@ -106,7 +106,7 @@ class MyDict(dict):
 
     def to_json(self, case_type=None):
         """Returns a JSON-like string representing this instance"""
-        return json.dumps(self.get_dict(case_type=case_type))
+        return json.dumps(self.get_dict(case_type))
 
     def get_dict(self, case_type=None):
         """Returns a <dict> of the <MyDict> object"""
