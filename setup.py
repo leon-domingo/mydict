@@ -13,7 +13,7 @@ except ImportError:
 
 setup(
     name='mydict',
-    version='1.1.1',
+    version='1.1.2',
     author=u'León Domingo',
     author_email='leon.domingo@gmail.com',
     description=description,

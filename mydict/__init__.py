@@ -13,7 +13,6 @@ class MyDict(dict):
     A **Python** _dict_ subclass which tries to act like **JavaScript** objects, so you can use the **dot notation** (.) to access members of the object. If the member doesn't exist yet then it's created when you assign something to it. Brackets notation (d['foo']) is also possible.
     """
 
-
     def __init__(self, dict_source=None, **kw):
         if dict_source and isinstance(dict_source, (dict, MyDict)):
             for k, v in dict_source.items():
@@ -109,7 +108,15 @@ class MyDict(dict):
         return json.dumps(self.get_dict(case_type))
 
     def get_dict(self, case_type=None):
-        """Returns a <dict> of the <MyDict> object"""
+        """
+        Returns a <dict> of the <MyDict> object
+
+        Args:
+            case_type: The type of case
+
+        Returns:
+            A <dict> representing the
+        """
 
         def _get_dict(member, case_type):
 
@@ -155,7 +162,6 @@ class MyDict(dict):
                 return member
 
         return _get_dict(self, case_type)
-
 
     @staticmethod
     def from_json(json_source, case_type=None):

@@ -10,7 +10,7 @@ $ pip install mydict
 
 ## Examples
 
-Let's give it a try
+Let's give it a try.
 
 ```python
 d = MyDict()
@@ -51,7 +51,7 @@ print(d.foo[2])
 # ==> 3
 ```
 
-We can instantiate it from a _dict_ of any level of complexity
+We can instantiate it from a _dict_ of any level of complexity:
 
 ```python
 d = MyDict({'foo': 'bar', 'baz': [1, 2, {'foo': 'bar', 'baz': 'Hello, world!'}]})
@@ -66,7 +66,7 @@ print(d.baz[2].foo)
 # ==> 'bar'
 ```
 
-with keywords in the _constructor_
+with keywords in the _constructor_:
 
 ```python
 d = MyDict(a=1, b=2.2, c=[1, 2, 3], d=[{'x': 1, 'y': [100, 200, 300]}])
@@ -78,7 +78,7 @@ d.d[0].x == 1
 d.d[0].y[1] == 200
 ```
 
-or both
+or both:
 
 ```python
 d = MyDict({'foo': 'bar'}, baz=123)
@@ -87,7 +87,7 @@ d.foo == 'bar'
 d.baz == 123
 ```
 
-Please, take into account that keyword initialization has precedence over the _dict_ (first parameter of the _constructor_)
+Please, take into account that keyword initialization has precedence over the _dict_ (first parameter of the _constructor_):
 
 ```python
 d = MyDict({'foo': 'bar'}, foo='BAR')
@@ -104,7 +104,7 @@ d['foo.bar'] == 'baz'
 d.get('foo.bar') == 'baz'
 ```
 
-But when those keys _with dots_ exists in the tree they are accessed using the corresponding key
+But when those keys _with dots_ exists in the tree they are accessed using the corresponding key:
 
 ```python
 d = MyDict({'foo.bar': 'baz'})
@@ -113,7 +113,7 @@ d = MyDict({'foo.bar': 'baz'})
 d['foo.bar'] = 'baz'
 ```
 
-But there's a particular case, if a _dotted key_ exists and match an existing _path_, then this ain't work properly, or work in a different way depending on the method of access used, to be correct
+But there's a particular case, if a _dotted key_ exists and match an existing _path_, then this ain't work properly, or work in a different way depending on the method of access used, to be correct:
 
 ```python
 d = MyDict({'foo': {'bar': 'baz'}, 'foo.bar': 'BAZ'})
@@ -122,11 +122,20 @@ d['foo.bar'] = 'BAZ'  # the "dotted field" ('foo.bar') has precedence over the p
 d.foo.bar = 'baz'  # it's not possible to detect a "dotted key" using "dot notation"
 ```
 
-Personally, I don't see this as a great issue because I generally avoid using dots in keys, like in the previous case
+Personally, I don't see this as a great issue because I generally avoid using dots in keys, like in the previous case.
 
 #### Transformation
 
 You have at your disposal a couple of methods to retrieve the **MyDict** object transformed into _something else_:
+
+##### Types of case
+
+The available types of case are:
+ - *mydict.SNAKE_CASE* : *snake_case*
+ - *mydict.CAMEL_CASE* : *camelCase*
+ - *mydict.PASCAL_CASE* : *PascalCase*
+
+More on this later on.
 
 ##### to_json
 
@@ -138,7 +147,7 @@ d.to_json()
 # '{"foo": "bar", "arr": [1, 2, {"three": 3}]}'
 ```
 
-In addition, it's also possible to handle the _case type_ of the keys inside the object. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see it in action:
+In addition, it's also possible to handle the _case type_ of the keys inside the object. For example, we can use *snake_case* in **MyDict** object and then "export" it with those keys in *camelCase*. Let's see it in action:
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
@@ -156,7 +165,7 @@ d.get_dict()
 # d_ = {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
 ```
 
-In addition, it's also possible to handle the _case type_ of the keys inside the object, in the same way **to_json** works. For example, we can use **snake_case** in **MyDict** object and then "export" it with those keys in **camelCase**. Let's see it in action:
+In addition, it's also possible to handle the **case type** of the keys inside the object, in the same way **to_json** works. For example, we can use *snake_case* in **MyDict** object and then "export" it with those keys in *camelCase*. Let's see it in action:
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
@@ -197,10 +206,10 @@ d = MyDict.from_json(b)
 # d.foo == 'bar'
 ```
 
-In addition, there's also a param **case_type** in the **from_json** method. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
+In addition, there's also a param *case_type* in the **from_json** method. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
 
 ```python
-d = MyDict.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_type=SNAKE_CASE)
+d = MyDict.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_type=mydict.SNAKE_CASE)
 # d.my_foo == 'bar'
 # d.my_arr == [1, 2, {'other_key': 3}]
 # d.my_arr[2].other_key == 3

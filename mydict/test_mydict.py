@@ -6,7 +6,6 @@ from .utils import (
     SNAKE_CASE,
     CAMEL_CASE,
     PASCAL_CASE,
-    KEBAB_CASE,
 )
 
 
