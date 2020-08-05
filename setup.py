@@ -31,6 +31,10 @@ setup(
     ],
     install_requires=[
         'stringcase',
-        'pytest',
-    ]
+    ],
+    extras_require={
+        'test': [
+            'pytest',
+        ],
+    },
 )

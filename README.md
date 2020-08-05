@@ -220,5 +220,6 @@ Very useful when we collect data from an API which uses _camelCase_ for its keys
 The tests passed successfully with **Python 3.6**. With **Python 2.7** fail on "bytes stuff" tests, regarding the use of the static method **from_json()**.
 
 ```shell
+$ pip install pytest
 $ pytest mydict -v
 ```
