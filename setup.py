@@ -30,6 +30,7 @@ setup(
         'mydict',
     ],
     install_requires=[
+        'stringcase',
         'pytest',
     ]
 )
