@@ -162,7 +162,7 @@ In some occasions you'll need a _plain old_ Python _dict_ representation of the 
 ```python
 d = MyDict(foo="bar", arr=[{"one": 1}, {"two": 2}])
 d.get_dict()
-# d_ = {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
+# {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
 ```
 
 In addition, it's also possible to handle the **case type** of the keys inside the object, in the same way **to_json** works. For example, we can use *snake_case* in **MyDict** object and then "export" it with those keys in *camelCase*. Let's see it in action:
@@ -185,7 +185,7 @@ d = MyDict.from_json(b'{"foo": "bar"}')
 # d.foo == 'bar'
 
 d = MyDict.from_json(open('/path/to/file.json', 'r'))
-# d = MyDict.from_json(open('/path/to/file.json', 'rb')) also work
+# d = MyDict.from_json(open('/path/to/file.json', 'rb')) also works
 ```
 
 ```python
@@ -194,17 +194,18 @@ from io import StringIO, BytesIO
 s = StringIO()
 s.write('{"foo": "bar"}')
 
-d = MyDict.from_json(s)
-# d.foo == 'bar'
+d_from_s = MyDict.from_json(s)
+# d_from_s.foo == 'bar'
 
-# ...
-
-b = StringIO()
+b = BytesIO()
 b.write(b'{"foo": "bar"}')
+# b.write('{"foo": "bar"}'.encode('utf8')) is equivalent
 
-d = MyDict.from_json(b)
-# d.foo == 'bar'
+d_from_b = MyDict.from_json(b)
+# d_from_b.foo == 'bar'
 ```
+
+Please, notice whether the _source_ is string or bytes the result is always *string*.
 
 In addition, there's also a param *case_type* in the **from_json** method. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
 
