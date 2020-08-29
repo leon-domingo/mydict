@@ -149,16 +149,22 @@ class TestMyDict:
         d.tuple_value = (1, 2, 3)
         assert d.tuple_value == (1, 2, 3)
 
+    def test__assign_a_complex_tuple(self):
+        d = MyDict()
+        d.tuple_value = (1, 2, {'foo': 'bar'})
+        assert d.tuple_value == (1, 2, {'foo': 'bar'})
+        assert d.tuple_value[2].foo == 'bar'
+
     def test__access_a_tuple(self):
         d = MyDict()
-        d.t = (1, 2, 3)
-        assert d.t[1] == 2
+        d.tuple_value = (1, 2, 3)
+        assert d.tuple_value[1] == 2
 
     def test__assign_a_complex_tuple(self):
         d = MyDict()
-        d.t = (1, 2, {'foo': 'bar', 'baz': [1, 2, 3]})
-        assert d.t[2].foo == 'bar'
-        assert d.t[2].baz[2] == 3
+        d.tuple_value = (1, 2, {'foo': 'bar', 'baz': [1, 2, 3]})
+        assert d.tuple_value[2].foo == 'bar'
+        assert d.tuple_value[2].baz[2] == 3
 
     def test__assign_a_dict_value(self):
         d = MyDict()
@@ -174,8 +180,8 @@ class TestMyDict:
 
     def test__assign_a_set_value(self):
         d = MyDict()
-        d.assign_value = {1, 2, 3}
-        assert d.assign_value == {1, 2, 3}
+        d.set_value = {1, 2, '3'}
+        assert d.set_value == {1, 2, '3'}
 
     def test__initialization_with_dict(self):
         d = MyDict({'foo': 'bar', 'baz': [1, 2, 3]})
@@ -198,7 +204,7 @@ class TestMyDict:
         assert d.foo == 'bar'
         assert d.baz[1] == 2
 
-    def test__initialization_with_keywords_overwrite(self):
+    def test__initialization_with_overriding_keys(self):
         d = MyDict({'foo': 'bar'}, foo='BAR')
         assert d.foo == 'BAR'
 
@@ -223,7 +229,9 @@ class TestMyDict:
         assert d == {'foo': 'bar', 'baz': 123}
 
     def test__create_from_json__string(self):
-        d = mydict.jsonify.from_json('{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}')
+        d = mydict.jsonify.from_json(
+            '{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}'
+        )
         assert d.foo == 'bar'
         assert d.baz[0] == 1
         assert d.baz[3].foo == 'bar'
@@ -233,7 +241,6 @@ class TestMyDict:
             '{"myFoo": "bar", "myBaz": [1, 2.2, "fuu", {"myFoo": "bar"}]}',
             case_type=SNAKE_CASE,
         )
-
         assert d.my_foo == 'bar'
         assert d.my_baz[0] == 1
         assert d.my_baz[3].my_foo == 'bar'
@@ -243,7 +250,6 @@ class TestMyDict:
             '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}',
             case_type=CAMEL_CASE,
         )
-
         assert d.myFoo == 'bar'
         assert d.myBaz[0] == 1
         assert d.myBaz[3].myFoo == 'bar'
@@ -253,7 +259,6 @@ class TestMyDict:
             '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}',
             case_type=PASCAL_CASE,
         )
-
         assert d.MyFoo == 'bar'
         assert d.MyBaz[0] == 1
         assert d.MyBaz[3].MyFoo == 'bar'
@@ -262,7 +267,6 @@ class TestMyDict:
         d = mydict.jsonify.from_json(
             '{"foo": "bar", "baz": [1, 2.2, "fuu", {"foo": "bar"}]}'.encode('utf8')
         )
-
         assert d.foo == 'bar'
         assert d.foo != b'bar'
         assert d.baz[0] == 1
@@ -274,7 +278,6 @@ class TestMyDict:
             '{"myFoo": "bar", "myBaz": [1, 2.2, "fuu", {"myFoo": "bar"}]}'.encode('utf8'),
             case_type=SNAKE_CASE,
         )
-
         assert d.my_foo == 'bar'
         assert d.my_baz[0] == 1
         assert d.my_baz[3].my_foo == 'bar'
@@ -284,7 +287,6 @@ class TestMyDict:
             '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}'.encode('utf8'),
             case_type=CAMEL_CASE,
         )
-
         assert d.myFoo == 'bar'
         assert d.myBaz[0] == 1
         assert d.myBaz[3].myFoo == 'bar'
@@ -294,7 +296,6 @@ class TestMyDict:
             '{"my_foo": "bar", "my_baz": [1, 2.2, "fuu", {"my_foo": "bar"}]}'.encode('utf8'),
             case_type=PASCAL_CASE,
         )
-
         assert d.MyFoo == 'bar'
         assert d.MyBaz[0] == 1
         assert d.MyBaz[3].MyFoo == 'bar'
@@ -316,11 +317,7 @@ class TestMyDict:
             'test/test-camel-case.json',
         )
 
-        d = mydict.jsonify.from_json(
-            open(json_file, 'r'),
-            case_type=SNAKE_CASE,
-        )
-
+        d = mydict.jsonify.from_json(open(json_file, 'r'), case_type=SNAKE_CASE)
         assert d.my_foo == 'bar'
         assert d.my_baz[0] == 1
         assert d.my_baz[3].my_foo == 'bar'

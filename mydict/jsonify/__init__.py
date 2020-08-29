@@ -1,9 +1,9 @@
 import json
 import stringcase
-# from .. import MyDict
 from .. import MyDict
 from ..utils import (
     object_hook,
+    ignore_case,
     SNAKE_CASE,
     CAMEL_CASE,
     PASCAL_CASE,
@@ -22,51 +22,33 @@ def get_dict(my_dict: MyDict, case_type=None) -> dict:
     """
 
     def _get_dict(member, case_type):
+        CASE_FUNCS = {
+            SNAKE_CASE: stringcase.snakecase,
+            CAMEL_CASE: stringcase.camelcase,
+            PASCAL_CASE: stringcase.pascalcase,
+        }
+
         if isinstance(member, (dict, MyDict)):
-            d = {}
-            for k, v in member.items():
-                custom_key = k
-                if case_type == SNAKE_CASE:
-                    custom_key = stringcase.snakecase(k)
-
-                elif case_type == CAMEL_CASE:
-                    custom_key = stringcase.camelcase(k)
-
-                elif case_type == PASCAL_CASE:
-                    custom_key = stringcase.pascalcase(k)
-
-                d[custom_key] = _get_dict(v, case_type)
-
-            return d
+            return {
+                CASE_FUNCS.get(case_type, ignore_case)(k): _get_dict(v, case_type)
+                for k, v in member.items()
+            }
 
         elif isinstance(member, (list,)):
-            lst = []
-            for a in member:
-                lst.append(_get_dict(a, case_type))
-
-            return lst
+            return [_get_dict(a, case_type) for a in member]
 
         elif isinstance(member, (tuple,)):
-            tpl = tuple()
-            for a in member:
-                tpl = tpl + (_get_dict(a, case_type),)
-
-            return tpl
+            return tuple(_get_dict(a, case_type) for a in member)
 
         elif isinstance(member, (set,)):
-            st = set([])
-            for a in member:
-                st.add(_get_dict(a, case_type))
+            return {_get_dict(a, case_type) for a in member}
 
-            return st
-
-        else:
-            return member
+        return member
 
     return _get_dict(my_dict, case_type)
 
 
-def to_json(my_dict, case_type=None) -> str:
+def to_json(my_dict: MyDict, case_type=None) -> str:
     """Returns a JSON-like string representing this instance"""
     return json.dumps(get_dict(my_dict, case_type))
 
