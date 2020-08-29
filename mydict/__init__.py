@@ -95,10 +95,10 @@ class MyDict(dict):
             parts = str(key).split('.')
             if len(parts) > 1:
                 try:
-                    return self.get(parts[0]).get('.'.join(parts[1:]))
+                    return self.get(parts[0]).get('.'.join(parts[1:]), default)
 
                 except Exception:
-                    return None
+                    return default
 
             else:
                 return super(MyDict, self).get(key, default)
