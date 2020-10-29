@@ -1,5 +1,7 @@
 # MyDict
 
+> Version 2.X is a breaking-API step regarding the functions that transforms the MyDict object into/from something else. Those methods have been moved to another module: mydict.jsonify. Everything else remains the same, and Python 2.X is totally discouraged at this point.
+
 A **Python** _dict_ subclass which tries to act like **JavaScript** objects, so you can use the **dot notation** (_d.foo_) to access members of the object. If the member doesn't exist yet then it's created when you assign a value to it. Brackets notation (_d['foo']_) is also accepted.
 
 ## Installation
@@ -126,7 +128,7 @@ Personally, I don't see this as a great issue because I generally avoid using do
 
 #### Transformation
 
-You have at your disposal a couple of methods to retrieve the **MyDict** object transformed into _something else_:
+You have at your disposal a couple of functions to retrieve the **MyDict** object transformed into _something else_. For the **version 2** the original methods (to_json, from_json, get_dict) have been moved to another module: *mydict.jsonify*.
 
 ##### Types of case
 
@@ -137,13 +139,13 @@ The available types of case are:
 
 More on this later on.
 
-##### to_json
+##### mydict.jsonify.to_json
 
 Returns the **MyDict** object as a _JSON_ string (_str_):
 
 ```python
 d = MyDict(foo="bar", arr=[1, 2, {"three": 3}])
-d.to_json()
+mydict.jsonify.to_json(d)
 # '{"foo": "bar", "arr": [1, 2, {"three": 3}]}'
 ```
 
@@ -151,41 +153,41 @@ In addition, it's also possible to handle the _case type_ of the keys inside the
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
-d.to_json(case_type=mydict.CAMEL_CASE)
+mydict.jsonify.to_json(d, case_type=mydict.CAMEL_CASE)
 # '{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}'
 ```
 
-##### get_dict
+##### mydict.jsonify.get_dict
 
 In some occasions you'll need a _plain old_ Python _dict_ representation of the **MyDict** object, though is a _dict_ subclass:
 
 ```python
 d = MyDict(foo="bar", arr=[{"one": 1}, {"two": 2}])
-d.get_dict()
-# d_ = {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
+mydict.jsonify.get_dict(d)
+# {'foo': 'bar', 'arr': [{'one': 1}, {'two': 2}]}
 ```
 
 In addition, it's also possible to handle the **case type** of the keys inside the object, in the same way **to_json** works. For example, we can use *snake_case* in **MyDict** object and then "export" it with those keys in *camelCase*. Let's see it in action:
 
 ```python
 d = MyDict(my_foo='bar', my_arr=[1, 2, {"other_key": 3}])
-d.get_dict(case_type=mydict.CAMEL_CASE)
+mydict.jsonify.get_dict(d, case_type=mydict.CAMEL_CASE)
 # {'myArr': [1, 2, {'otherKey': 3}], 'myFoo': 'bar'}
 ```
 
 #### Initialization from JSON
 
-It's also possible to load a JSON from _str_, _bytes_, and file-like objects (with a _.read()_ method) using the _static_ method **from_json**:
+It's also possible to load a JSON from _str_, _bytes_, and file-like objects (with a _.read()_ method) using the function **mydict.jsonify.from_json**:
 
 ```python
-d = MyDict.from_json('{"foo": "bar"}')
+d = mydict.jsonify.from_json('{"foo": "bar"}')
 # d.foo == 'bar'
 
-d = MyDict.from_json(b'{"foo": "bar"}')
+d = mydict.jsonify.from_json(b'{"foo": "bar"}')
 # d.foo == 'bar'
 
-d = MyDict.from_json(open('/path/to/file.json', 'r'))
-# d = MyDict.from_json(open('/path/to/file.json', 'rb')) also work
+d = mydict.jsonify.from_json(open('/path/to/file.json', 'r'))
+# d = mydict.jsonify.from_json(open('/path/to/file.json', 'rb')) also works
 ```
 
 ```python
@@ -194,22 +196,23 @@ from io import StringIO, BytesIO
 s = StringIO()
 s.write('{"foo": "bar"}')
 
-d = MyDict.from_json(s)
-# d.foo == 'bar'
+d_from_s = mydict.jsonify.from_json(s)
+# d_from_s.foo == 'bar'
 
-# ...
-
-b = StringIO()
+b = BytesIO()
 b.write(b'{"foo": "bar"}')
+# b.write('{"foo": "bar"}'.encode('utf8')) is equivalent
 
-d = MyDict.from_json(b)
-# d.foo == 'bar'
+d_from_b = mydict.jsonify.from_json(b)
+# d_from_b.foo == 'bar'
 ```
 
-In addition, there's also a param *case_type* in the **from_json** method. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
+Please, notice whether the _source_ is string or bytes the result is always *string*.
+
+In addition, there's also a param *case_type* in the **from_json** function. It works in the same way we previously mentioned for **to_json** and **get_dict**. For example:
 
 ```python
-d = MyDict.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_type=mydict.SNAKE_CASE)
+d = mydict.jsonify.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_type=mydict.SNAKE_CASE)
 # d.my_foo == 'bar'
 # d.my_arr == [1, 2, {'other_key': 3}]
 # d.my_arr[2].other_key == 3
@@ -217,7 +220,7 @@ d = MyDict.from_json('{"myFoo": "bar", "myArr": [1, 2, {"otherKey": 3}]}', case_
 
 Very useful when we collect data from an API which uses _camelCase_ for its keys but we want a more _pythonic_ way for those keys.
 
-The tests passed successfully with **Python 3.6**. With **Python 2.7** fail on "bytes stuff" tests, regarding the use of the static method **from_json()**.
+The tests passed successfully with **Python 3.6**. **Python 2.X** is totally discouraged at this stage of the library. We recommend using **Python +3.X**
 
 ```shell
 $ pip install pytest
