@@ -223,5 +223,6 @@ Very useful when we collect data from an API which uses _camelCase_ for its keys
 The tests passed successfully with **Python 3.6**. **Python 2.X** is totally discouraged at this stage of the library. We recommend using **Python +3.X**
 
 ```shell
+$ pip install pytest
 $ pytest mydict -v
 ```
