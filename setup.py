@@ -1,4 +1,4 @@
-from setuptools import setup
+import setuptools
 import os
 
 description = 'A Python dict subclass which tries to act like JavaScript objects, so you can use the dot-notation (d.foo) to access members of the object.'
@@ -11,9 +11,9 @@ try:
 except ImportError:
     long_description = description
 
-setup(
+setuptools.setup(
     name='mydict',
-    version='2.0.0',
+    version='2.1.0',
     author=u'León Domingo',
     author_email='leon.domingo@gmail.com',
     description=description,
@@ -26,11 +26,9 @@ setup(
         'Topic :: Utilities',
     ],
     url='https://github.com/leon-domingo/mydict',
-    packages=[
-        'mydict',
-    ],
+    packages=setuptools.find_packages(),
     install_requires=[
         'stringcase',
         'pytest',
-    ]
+    ],
 )
