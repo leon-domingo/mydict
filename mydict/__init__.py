@@ -18,6 +18,7 @@ class MyDict(dict):
         """
         if name in self:
             return self[name]
+        return None
 
     def __setattr__(self, name, value):
         """
@@ -81,7 +82,6 @@ def _transform(source):
                 result = (_transform(item),)
             else:
                 result = result + (_transform(item),)
-
         return result
     else:
         return source

@@ -13,7 +13,7 @@ except ImportError:
 
 setuptools.setup(
     name='mydict',
-    version='2.1.0',
+    version='2.1.1',
     author=u'León Domingo',
     author_email='leon.domingo@gmail.com',
     description=description,
